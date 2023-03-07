@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express(); 
 
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
@@ -24,11 +25,27 @@ app.get('/testimonials/:id', (req, res) => {
 });
 
 app.post('/testimonials', (req, res) => {
-    const author = req.params.author;
-    const text = req.params.text;
+    const author = req.body.author;
+    const text = req.body.text;
     const id = uuidv4();
     db.push({id: id, author: author, text: text});
     res.json({ message: 'OK'});
+});
+
+app.put('/testimonials/:id', (req, res) => {
+    const { id } = req.params;
+    const { author, text } = req.body;
+
+    const index = db.findIndex(object => object.id == id);
+    console.log(index);
+    if (index != -1) {
+        db[index] = author;
+        db[index] = text;
+        res.json({ message: 'OK'});
+    } else {
+        res.status(404).json({ message: "This testimony does not exist"});
+    }
+
 });
 
 
