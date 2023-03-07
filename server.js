@@ -24,6 +24,16 @@ app.get('/testimonials/:id', (req, res) => {
     res.json(db.find(element => element.id === req.params.id));
 });
 
+app.get('/testimonials/random', (req, res) => {
+    var length = db.length;
+    console.log(length);
+    var index = Math.floor(Math.random() * length);
+    console.log(index);
+    var randomObject = db[index];
+    console.log(randomObject);
+    res.json(randomObject);
+});
+
 app.post('/testimonials', (req, res) => {
     const author = req.body.author;
     const text = req.body.text;
@@ -39,14 +49,14 @@ app.put('/testimonials/:id', (req, res) => {
     const index = db.findIndex(object => object.id == id);
     console.log(index);
     if (index != -1) {
-        db[index] = author;
-        db[index] = text;
+        db[index].author = author;
+        db[index].text = text;
         res.json({ message: 'OK'});
     } else {
         res.status(404).json({ message: "This testimony does not exist"});
     }
-
 });
+
 
 
 app.listen(9000, () => {
